@@ -1,7 +1,4 @@
 import pandas as pd
-import seaborn as sns
-import numpy as np
-import matplotlib.pyplot as plt
 
 
 # What is the most commonly awarded gender and birth country?
@@ -45,18 +42,36 @@ print(max_decade_usa)
 # Which decade and Nobel Prize category combination had the highest proportion of female laureates?
 # Store this as a dictionary called max_female_dict where the decade is the key and the category is the value. There should only be one key:value pair.
 
+female_proportion = (
+    df.groupby(['decade', 'category'])['sex']
+    .apply(lambda x: (x == 'Female').mean())
+)
+
+max_combination = female_proportion.idxmax()
+
+max_female_dict = {
+    max_combination[0]: max_combination[1]
+}
+
+print(max_female_dict)
 
 # Who was the first woman to receive a Nobel Prize, and in what category?
 # Save your string answers as first_woman_name and first_woman_category.
+
+df_2 = df[df['sex'].isin(['Female'])][['category','full_name','year']].sort_values('year').head(1)
+first_woman_name = df_2['full_name'].iloc[0]
+first_woman_category = df_2['category'].iloc[0]
+
+print(first_woman_name)
+print(first_woman_category)
 
 
 # Which individuals or organizations have won more than one Nobel Prize throughout the years?
 # Store the full names in a list named repeat_list.
 
+more_than_one = (
+    df['full_name'].value_counts()
+)
 
-
-
-
-#print(df.info())
-#print(df.shape)
-#print(df['birth_country'].unique())
+repeat_list = more_than_one[more_than_one>= 2].index.to_list()
+print(repeat_list)
